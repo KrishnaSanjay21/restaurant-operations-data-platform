@@ -73,6 +73,11 @@ The NOAA Access Data Service used here does not require a token. `NOAA_TOKEN` is
 
 Cloud resources are defined but are **not represented as deployed** in this repository. Deployment requires the operator's AWS and Snowflake accounts, credentials, budgets, and approvals. See [deployment.md](docs/deployment.md) and [failure-recovery.md](docs/failure-recovery.md).
 
+The deployment defaults are cost-controlled: recurring runs and alarms are off,
+API sources are capped at 10,000 rows each, and Glue uses two workers. This is not
+a guarantee of zero cost—Glue ETL and Snowflake compute are paid services. Create
+a budget alert first and follow the teardown section in the deployment guide.
+
 ## Evidence and claims
 
 - Source rows and retrieval timestamps are written to `artifacts/record_counts.json`.
