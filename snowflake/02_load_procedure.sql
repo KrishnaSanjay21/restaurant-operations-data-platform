@@ -1,0 +1,72 @@
+USE DATABASE RESTAURANT_OPS;
+USE SCHEMA RAW;
+
+CREATE OR REPLACE PROCEDURE LOAD_CURATED_BATCH(BATCH_ID STRING, SOURCE_COUNTS VARIANT)
+RETURNS VARIANT
+LANGUAGE SQL
+EXECUTE AS OWNER
+AS
+$$
+DECLARE
+    inspection_rows NUMBER DEFAULT 0;
+    complaint_rows NUMBER DEFAULT 0;
+    weather_rows NUMBER DEFAULT 0;
+    batch_pattern STRING;
+BEGIN
+    batch_pattern := '.*_batch_id=' || BATCH_ID || '/.*[.]parquet';
+    BEGIN TRANSACTION;
+
+    COPY INTO INSPECTIONS
+      FROM @CURATED_STAGE/inspections/
+      FILE_FORMAT = (FORMAT_NAME = PARQUET_FORMAT)
+      MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+      PATTERN = :batch_pattern
+      ON_ERROR = ABORT_STATEMENT;
+    inspection_rows := SQLROWCOUNT;
+
+    COPY INTO COMPLAINTS
+      FROM @CURATED_STAGE/complaints/
+      FILE_FORMAT = (FORMAT_NAME = PARQUET_FORMAT)
+      MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+      PATTERN = :batch_pattern
+      ON_ERROR = ABORT_STATEMENT;
+    complaint_rows := SQLROWCOUNT;
+
+    COPY INTO WEATHER
+      FROM @CURATED_STAGE/weather/
+      FILE_FORMAT = (FORMAT_NAME = PARQUET_FORMAT)
+      MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+      PATTERN = :batch_pattern
+      ON_ERROR = ABORT_STATEMENT;
+    weather_rows := SQLROWCOUNT;
+
+    INSERT INTO LOAD_AUDIT
+      (BATCH_ID, SOURCE_NAME, STARTED_AT, COMPLETED_AT, SOURCE_COUNT,
+       LOADED_COUNT, REJECTED_COUNT, STATUS, ERROR_MESSAGE)
+    SELECT :BATCH_ID, source_name, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(),
+           source_count, loaded_count, GREATEST(source_count - loaded_count, 0),
+           IFF(source_count = loaded_count, 'SUCCESS', 'COUNT_VARIANCE'), NULL
+    FROM VALUES
+      ('INSPECTIONS', COALESCE(:SOURCE_COUNTS:INSPECTIONS::NUMBER, 0), :inspection_rows),
+      ('COMPLAINTS', COALESCE(:SOURCE_COUNTS:COMPLAINTS::NUMBER, 0), :complaint_rows),
+      ('WEATHER', COALESCE(:SOURCE_COUNTS:WEATHER::NUMBER, 0), :weather_rows)
+      AS v(source_name, source_count, loaded_count);
+
+    COMMIT;
+    RETURN OBJECT_CONSTRUCT(
+      'batch_id', :BATCH_ID,
+      'inspections', :inspection_rows,
+      'complaints', :complaint_rows,
+      'weather', :weather_rows,
+      'status', 'COMPLETED'
+    );
+EXCEPTION
+    WHEN OTHER THEN
+      ROLLBACK;
+      INSERT INTO LOAD_AUDIT
+        (BATCH_ID, SOURCE_NAME, STARTED_AT, COMPLETED_AT, SOURCE_COUNT,
+         LOADED_COUNT, REJECTED_COUNT, STATUS, ERROR_MESSAGE)
+      VALUES (:BATCH_ID, 'ALL', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 0, 0, 0, 'FAILED', SQLERRM);
+      RAISE;
+END;
+$$;

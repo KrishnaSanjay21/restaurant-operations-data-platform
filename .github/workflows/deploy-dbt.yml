@@ -1,0 +1,38 @@
+name: Deploy dbt
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: dbt target
+        required: true
+        default: prod
+        type: choice
+        options: [dev, prod]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    env:
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_DATABASE: RESTAURANT_OPS
+      SNOWFLAKE_WAREHOUSE: RESTAURANT_OPS_WH
+      SNOWFLAKE_SCHEMA: ANALYTICS
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-dbt.txt
+      - run: mkdir -p ~/.dbt && cp dbt/restaurant_ops/profiles.yml.example ~/.dbt/profiles.yml
+      - run: dbt build --target '${{ inputs.target }}' --project-dir dbt/restaurant_ops
+      - run: dbt source freshness --target '${{ inputs.target }}' --project-dir dbt/restaurant_ops
+

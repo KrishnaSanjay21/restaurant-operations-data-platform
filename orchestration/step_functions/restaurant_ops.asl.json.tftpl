@@ -1,0 +1,124 @@
+{
+  "Comment": "Restaurant operations ingestion, normalization, retries, and Snowflake load",
+  "StartAt": "PrepareSources",
+  "States": {
+    "PrepareSources": {
+      "Type": "Pass",
+      "Parameters": {
+        "batch_id.$": "$$.Execution.Name",
+        "ingest_date.$": "States.ArrayGetItem(States.StringSplit($$.Execution.StartTime, 'T'), 0)",
+        "start_date.$": "$.start_date",
+        "end_date.$": "States.ArrayGetItem(States.StringSplit($$.Execution.StartTime, 'T'), 0)",
+        "sources": [
+          {"source": "inspections", "max_rows": 0, "page_size": 50000},
+          {"source": "complaints", "max_rows": 275000, "page_size": 50000},
+          {"source": "weather", "max_rows": 0, "page_size": 50000}
+        ]
+      },
+      "Next": "IngestAndNormalize"
+    },
+    "IngestAndNormalize": {
+      "Type": "Map",
+      "ItemsPath": "$.sources",
+      "MaxConcurrency": 3,
+      "ItemSelector": {
+        "source.$": "$$.Map.Item.Value.source",
+        "max_rows.$": "$$.Map.Item.Value.max_rows",
+        "page_size.$": "$$.Map.Item.Value.page_size",
+        "batch_id.$": "$.batch_id",
+        "ingest_date.$": "$.ingest_date",
+        "start_date.$": "$.start_date",
+        "end_date.$": "$.end_date"
+      },
+      "ItemProcessor": {
+        "ProcessorConfig": {"Mode": "INLINE"},
+        "StartAt": "IngestPublicAPI",
+        "States": {
+          "IngestPublicAPI": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {
+              "FunctionName": "${ingest_lambda_arn}",
+              "Payload.$": "$"
+            },
+            "OutputPath": "$.Payload",
+            "Retry": [{
+              "ErrorEquals": ["Lambda.ServiceException", "Lambda.TooManyRequestsException", "States.TaskFailed"],
+              "IntervalSeconds": 10,
+              "MaxAttempts": 4,
+              "BackoffRate": 2
+            }],
+            "Next": "NormalizeWithGlue"
+          },
+          "NormalizeWithGlue": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::glue:startJobRun.sync",
+            "Parameters": {
+              "JobName": "${glue_job_name}",
+              "Arguments": {
+                "--SOURCE.$": "$.source",
+                "--RAW_BUCKET": "${raw_bucket}",
+                "--CURATED_BUCKET": "${curated_bucket}",
+                "--DLQ_URL": "${dlq_url}",
+                "--INGEST_DATE.$": "$.ingest_date",
+                "--BATCH_ID.$": "$.batch_id"
+              }
+            },
+            "Retry": [{
+              "ErrorEquals": ["Glue.ConcurrentRunsExceededException", "States.TaskFailed"],
+              "IntervalSeconds": 30,
+              "MaxAttempts": 3,
+              "BackoffRate": 2
+            }],
+            "ResultPath": "$.glue_result",
+            "End": true
+          }
+        }
+      },
+      "Catch": [{
+        "ErrorEquals": ["States.ALL"],
+        "ResultPath": "$.error",
+        "Next": "SendPipelineFailure"
+      }],
+      "ResultPath": "$.source_results",
+      "Next": "LoadSnowflake"
+    },
+    "LoadSnowflake": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${snowflake_lambda_arn}",
+        "Payload": {
+          "batch_id.$": "$.batch_id",
+          "ingest_date.$": "$.ingest_date",
+          "source_results.$": "$.source_results"
+        }
+      },
+      "OutputPath": "$.Payload",
+      "Retry": [{
+        "ErrorEquals": ["States.TaskFailed"],
+        "IntervalSeconds": 30,
+        "MaxAttempts": 3,
+        "BackoffRate": 2
+      }],
+      "Catch": [{
+        "ErrorEquals": ["States.ALL"],
+        "ResultPath": "$.error",
+        "Next": "SendPipelineFailure"
+      }],
+      "Next": "Success"
+    },
+    "SendPipelineFailure": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:sqs:sendMessage",
+      "Parameters": {
+        "QueueUrl": "${dlq_url}",
+        "MessageBody.$": "States.JsonToString($)"
+      },
+      "Next": "Failed"
+    },
+    "Failed": {"Type": "Fail", "Cause": "Restaurant operations pipeline failed"},
+    "Success": {"Type": "Succeed"}
+  }
+}
+
