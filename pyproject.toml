@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "restaurant-operations-data-platform"
+version = "0.1.0"
+description = "AWS-Snowflake-dbt reference platform for real NYC restaurant operations data"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Krishna Sanjay Vaddi" }]
+dependencies = [
+  "boto3>=1.35,<2",
+  "duckdb>=1.2,<2",
+  "pandas>=2.2,<3",
+  "pyarrow>=18,<22",
+  "python-dotenv>=1,<2",
+  "PyYAML>=6,<7",
+  "requests>=2.32,<3",
+  "tenacity>=9,<10",
+  "typer>=0.15,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+  "pytest-cov>=6,<8",
+  "ruff>=0.11,<1",
+]
+dashboard = [
+  "matplotlib>=3.9,<4",
+  "seaborn>=0.13,<1",
+]
+
+[project.scripts]
+restaurant-ops = "restaurant_ops.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers"
+testpaths = ["tests"]
+markers = ["network: calls live public APIs"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+

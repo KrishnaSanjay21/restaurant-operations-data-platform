@@ -1,0 +1,47 @@
+[
+  {
+    "camis": "50100001",
+    "dba": "TEST KITCHEN",
+    "boro": "Manhattan",
+    "building": "100",
+    "street": "MAIN STREET",
+    "zipcode": "10001",
+    "inspection_date": "2025-01-15T00:00:00.000",
+    "inspection_type": "Cycle Inspection / Initial Inspection",
+    "violation_code": "02B",
+    "violation_description": "Hot food item not held at or above required temperature.",
+    "critical_flag": "Critical",
+    "score": "20",
+    "grade": "B",
+    "record_date": "2025-01-20T00:00:00.000",
+    "latitude": "40.7500",
+    "longitude": "-73.9900",
+    "_retrieved_at": "2025-01-21T00:00:00+00:00"
+  },
+  {
+    "camis": "50100001",
+    "dba": "TEST KITCHEN",
+    "boro": "Manhattan",
+    "building": "100",
+    "street": "MAIN STREET",
+    "zipcode": "10001",
+    "inspection_date": "2025-01-15T00:00:00.000",
+    "inspection_type": "Cycle Inspection / Initial Inspection",
+    "violation_code": "02B",
+    "violation_description": "Hot food item not held at or above required temperature.",
+    "critical_flag": "Critical",
+    "score": "20",
+    "grade": "B",
+    "record_date": "2025-01-20T00:00:00.000",
+    "latitude": "40.7500",
+    "longitude": "-73.9900",
+    "_retrieved_at": "2025-01-21T00:00:00+00:00"
+  },
+  {
+    "camis": null,
+    "dba": "BROKEN ROW",
+    "inspection_date": "not-a-date",
+    "_retrieved_at": "2025-01-21T00:00:00+00:00"
+  }
+]
+

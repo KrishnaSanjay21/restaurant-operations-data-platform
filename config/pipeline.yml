@@ -1,0 +1,45 @@
+project:
+  name: restaurant-operations-data-platform
+  minimum_portfolio_records: 500000
+  timezone: America/New_York
+
+profiles:
+  sample:
+    inspections_limit: 10000
+    complaints_limit: 10000
+    page_size: 5000
+    start_date: "2024-01-01"
+  portfolio:
+    inspections_limit: 0
+    complaints_limit: 275000
+    page_size: 50000
+    start_date: "2010-01-01"
+
+sources:
+  inspections:
+    dataset_id: 43nn-pn8j
+    endpoint: https://data.cityofnewyork.us/resource/43nn-pn8j.json
+    primary_order: "record_date,camis,inspection_date,violation_code"
+  complaints:
+    dataset_id: erm2-nwe9
+    endpoint: https://data.cityofnewyork.us/resource/erm2-nwe9.json
+    filter: >-
+      agency='DOHMH' AND complaint_type IN
+      ('Food Establishment','Food Poisoning','Rodent','Mobile Food Vendor')
+    primary_order: "created_date DESC,unique_key DESC"
+  weather:
+    dataset: daily-summaries
+    endpoint: https://www.ncei.noaa.gov/access/services/data/v1
+    station: USW00094728
+    station_name: NY CITY CENTRAL PARK
+
+quality:
+  max_invalid_amount_rate: 0.0
+  max_null_restaurant_id_rate: 0.0
+  max_duplicate_key_rate: 0.0
+  max_orphan_rate: 0.0
+  freshness_hours:
+    inspections: 48
+    complaints: 48
+    weather: 72
+
