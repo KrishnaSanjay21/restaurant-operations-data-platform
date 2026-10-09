@@ -3,4 +3,11 @@ environment                      = "dev"
 snowflake_secret_arn             = "arn:aws:secretsmanager:us-east-1:123456789012:secret:restaurant-ops/snowflake"
 snowflake_connector_layer_arn    = "arn:aws:lambda:us-east-1:123456789012:layer:snowflake-connector-python:1"
 alarm_topic_arn                  = ""
+enable_schedule                  = false
+enable_alarms                    = false
+glue_workers                     = 2
+inspections_max_rows             = 10000
+complaints_max_rows              = 10000
+snowflake_principal_arn          = ""
+snowflake_external_id           = "BOOTSTRAP_ONLY_REPLACE_AFTER_DESC_INTEGRATION"
 

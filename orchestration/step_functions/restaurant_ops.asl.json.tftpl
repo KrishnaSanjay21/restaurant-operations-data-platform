@@ -10,8 +10,8 @@
         "start_date.$": "$.start_date",
         "end_date.$": "States.ArrayGetItem(States.StringSplit($$.Execution.StartTime, 'T'), 0)",
         "sources": [
-          {"source": "inspections", "max_rows": 0, "page_size": 50000},
-          {"source": "complaints", "max_rows": 275000, "page_size": 50000},
+          {"source": "inspections", "max_rows": ${inspections_max_rows}, "page_size": 50000},
+          {"source": "complaints", "max_rows": ${complaints_max_rows}, "page_size": 50000},
           {"source": "weather", "max_rows": 0, "page_size": 50000}
         ]
       },

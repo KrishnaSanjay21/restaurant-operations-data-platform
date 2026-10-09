@@ -9,6 +9,7 @@ locals {
   bucket_suffix       = random_id.suffix.hex
   alarm_actions       = var.alarm_topic_arn == "" ? [] : [var.alarm_topic_arn]
   snowflake_layers    = var.snowflake_connector_layer_arn == "" ? [] : [var.snowflake_connector_layer_arn]
+  snowflake_principal = var.snowflake_principal_arn == "" ? "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root" : var.snowflake_principal_arn
 }
 
 resource "aws_s3_bucket" "raw" {
@@ -75,6 +76,44 @@ resource "aws_s3_bucket_lifecycle_configuration" "raw" {
     }
     noncurrent_version_expiration { noncurrent_days = 30 }
   }
+}
+
+resource "aws_iam_role" "snowflake_storage" {
+  name = "${local.name}-snowflake-storage"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        AWS = local.snowflake_principal
+      }
+      Action = "sts:AssumeRole"
+      Condition = {
+        StringEquals = {
+          "sts:ExternalId" = var.snowflake_external_id
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "snowflake_storage" {
+  role = aws_iam_role.snowflake_storage.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetBucketLocation", "s3:ListBucket"]
+        Resource = aws_s3_bucket.curated.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:GetObjectVersion"]
+        Resource = "${aws_s3_bucket.curated.arn}/*"
+      }
+    ]
+  })
 }
 
 resource "aws_sqs_queue" "dead_letter" {
@@ -218,7 +257,7 @@ resource "aws_glue_job" "normalize" {
   role_arn          = aws_iam_role.glue.arn
   glue_version      = "5.0"
   worker_type       = "G.1X"
-  number_of_workers = 5
+  number_of_workers = var.glue_workers
   max_retries       = 1
   timeout           = 60
   command {
@@ -289,6 +328,8 @@ resource "aws_sfn_state_machine" "pipeline" {
     raw_bucket           = aws_s3_bucket.raw.id
     curated_bucket       = aws_s3_bucket.curated.id
     dlq_url              = aws_sqs_queue.dead_letter.url
+    inspections_max_rows = var.inspections_max_rows
+    complaints_max_rows  = var.complaints_max_rows
   })
   logging_configuration {
     include_execution_data = false
@@ -322,12 +363,14 @@ resource "aws_iam_role_policy" "events" {
 }
 
 resource "aws_cloudwatch_event_rule" "daily" {
+  count               = var.enable_schedule ? 1 : 0
   name                = "${local.name}-daily"
   schedule_expression = var.schedule_expression
 }
 
 resource "aws_cloudwatch_event_target" "pipeline" {
-  rule     = aws_cloudwatch_event_rule.daily.name
+  count    = var.enable_schedule ? 1 : 0
+  rule     = aws_cloudwatch_event_rule.daily[0].name
   arn      = aws_sfn_state_machine.pipeline.arn
   role_arn = aws_iam_role.events.arn
   input = jsonencode({
@@ -336,6 +379,7 @@ resource "aws_cloudwatch_event_target" "pipeline" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "pipeline_failed" {
+  count               = var.enable_alarms ? 1 : 0
   alarm_name          = "${local.name}-executions-failed"
   namespace           = "AWS/States"
   metric_name         = "ExecutionsFailed"
@@ -349,6 +393,7 @@ resource "aws_cloudwatch_metric_alarm" "pipeline_failed" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "dlq_visible" {
+  count               = var.enable_alarms ? 1 : 0
   alarm_name          = "${local.name}-dlq-visible"
   namespace           = "AWS/SQS"
   metric_name         = "ApproximateNumberOfMessagesVisible"
