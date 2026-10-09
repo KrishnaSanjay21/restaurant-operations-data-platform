@@ -1,0 +1,1 @@
+expression DataRoot = "C:\Users\vaddi\OneDrive\Desktop\lifeline\restaurant-operations-data-platform\dashboard" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]

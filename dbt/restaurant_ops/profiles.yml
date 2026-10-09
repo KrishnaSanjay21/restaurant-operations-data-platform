@@ -1,0 +1,14 @@
+restaurant_ops:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'RESTAURANT_OPS_TRANSFORMER') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'RESTAURANT_OPS') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'RESTAURANT_OPS_WH') }}"
+      schema: ANALYTICS
+      threads: 4
+      client_session_keep_alive: false

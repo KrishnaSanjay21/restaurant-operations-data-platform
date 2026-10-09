@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: int_inspection_events
+    description: One row per inspection event, aggregated from violation-level source records.
+    columns:
+      - name: inspection_key
+        tests: [unique, not_null]
+      - name: restaurant_id
+        tests: [not_null]
+
+  - name: int_restaurant_latest
+    description: Most recent known attributes for each restaurant.
+    columns:
+      - name: restaurant_id
+        tests: [unique, not_null]
+
+  - name: int_complaints_enriched
+    description: Complaints enriched with conservative exact-address restaurant matching.
+    columns:
+      - name: complaint_id
+        tests: [unique, not_null]
+      - name: restaurant_match_method
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['EXACT_ADDRESS_ZIP', 'UNMATCHED']
+

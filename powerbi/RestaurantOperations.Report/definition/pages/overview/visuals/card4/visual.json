@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "card4",
+  "position": {
+    "x": 1020,
+    "y": 20,
+    "z": 4,
+    "height": 100,
+    "width": 230,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Portfolio"
+                    }
+                  },
+                  "Property": "Priority Restaurants"
+                }
+              },
+              "queryRef": "Portfolio.Priority Restaurants",
+              "nativeQueryRef": "Priority Restaurants"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

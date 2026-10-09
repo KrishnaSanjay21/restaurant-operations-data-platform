@@ -1,0 +1,20 @@
+table Violations
+	column violation_code
+		dataType: string
+		sourceColumn: violation_code
+	column violation_description
+		dataType: string
+		sourceColumn: violation_description
+	column occurrences
+		dataType: int64
+		sourceColumn: occurrences
+
+	partition Violations = m
+		mode: import
+		source =
+			let
+				Source = Csv.Document(File.Contents(DataRoot & "\repeat_violations.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				Types = Table.TransformColumnTypes(Headers, {{"violation_code", type text}, {"violation_description", type text}, {"occurrences", Int64.Type}})
+			in
+				Types

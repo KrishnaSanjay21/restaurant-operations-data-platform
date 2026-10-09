@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "complaintMix",
+  "position": {
+    "x": 800,
+    "y": 145,
+    "z": 11,
+    "height": 530,
+    "width": 450,
+    "tabOrder": 11
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Complaints"
+                    }
+                  },
+                  "Property": "complaint_type"
+                }
+              },
+              "queryRef": "Complaints.complaint_type",
+              "nativeQueryRef": "complaint_type"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Complaints"
+                    }
+                  },
+                  "Property": "complaints"
+                }
+              },
+              "queryRef": "Complaints.complaints",
+              "nativeQueryRef": "complaints"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "database": "data\\warehouse\\restaurant_ops.duckdb",
+  "elapsed_seconds": 10.853,
+  "table_counts": {
+    "dim_restaurant": 27631,
+    "dim_location": 162843,
+    "dim_date": 6999,
+    "dim_violation": 147,
+    "fct_inspection": 93347,
+    "fct_violation": 289486,
+    "fct_complaint": 361938,
+    "fct_weather": 6123,
+    "rpt_restaurant_risk": 27631,
+    "rpt_daily_operations": 6999
+  }
+}

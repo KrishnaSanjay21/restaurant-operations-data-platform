@@ -1,0 +1,23 @@
+{
+  "inspections": {
+    "accepted_rows": 292437,
+    "rejected_rows": 7756,
+    "duplicate_rows_removed": 312821,
+    "output_path": "data\\curated\\inspections.parquet",
+    "rejected_path": "data\\curated\\inspections_rejected.parquet"
+  },
+  "complaints": {
+    "accepted_rows": 361938,
+    "rejected_rows": 0,
+    "duplicate_rows_removed": 198062,
+    "output_path": "data\\curated\\complaints.parquet",
+    "rejected_path": null
+  },
+  "weather": {
+    "accepted_rows": 6123,
+    "rejected_rows": 0,
+    "duplicate_rows_removed": 7133,
+    "output_path": "data\\curated\\weather.parquet",
+    "rejected_path": null
+  }
+}

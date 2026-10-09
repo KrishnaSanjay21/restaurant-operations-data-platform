@@ -1,0 +1,36 @@
+table Portfolio
+	column restaurants
+		dataType: int64
+		sourceColumn: restaurants
+	column inspections
+		dataType: int64
+		sourceColumn: inspections
+	column violations
+		dataType: int64
+		sourceColumn: violations
+	column complaints
+		dataType: int64
+		sourceColumn: complaints
+	column priority_restaurants
+		dataType: int64
+		sourceColumn: priority_restaurants
+	measure Restaurants = SUM(Portfolio[restaurants])
+		formatString: #,##0
+	measure Inspections = SUM(Portfolio[inspections])
+		formatString: #,##0
+	measure Violations = SUM(Portfolio[violations])
+		formatString: #,##0
+	measure Complaints = SUM(Portfolio[complaints])
+		formatString: #,##0
+	measure 'Priority Restaurants' = SUM(Portfolio[priority_restaurants])
+		formatString: #,##0
+
+	partition Portfolio = m
+		mode: import
+		source =
+			let
+				Source = Csv.Document(File.Contents(DataRoot & "\portfolio_kpis.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				Types = Table.TransformColumnTypes(Headers, {{"restaurants", Int64.Type}, {"inspections", Int64.Type}, {"violations", Int64.Type}, {"complaints", Int64.Type}, {"priority_restaurants", Int64.Type}})
+			in
+				Types

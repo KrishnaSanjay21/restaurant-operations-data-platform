@@ -1,0 +1,70 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "trend",
+  "position": {
+    "x": 20,
+    "y": 145,
+    "z": 10,
+    "height": 530,
+    "width": 760,
+    "tabOrder": 10
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Trend"
+                    }
+                  },
+                  "Property": "month"
+                }
+              },
+              "queryRef": "Trend.month",
+              "nativeQueryRef": "month"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Trend"
+                    }
+                  },
+                  "Property": "inspections"
+                }
+              },
+              "queryRef": "Trend.inspections",
+              "nativeQueryRef": "inspections"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Trend"
+                    }
+                  },
+                  "Property": "complaints"
+                }
+              },
+              "queryRef": "Trend.complaints",
+              "nativeQueryRef": "complaints"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "benchmark_engine": "DuckDB local evidence path",
+  "full_refresh_rows": 361938,
+  "incremental_candidate_rows": 10000,
+  "post_merge_rows": 307765,
+  "full_refresh_seconds": 1.634419,
+  "incremental_merge_seconds": 0.24928,
+  "speedup_ratio": 6.56,
+  "claim_boundary": "Local benchmark; Snowflake runtime must be measured after deployment."
+}

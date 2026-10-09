@@ -1,0 +1,10 @@
+Restaurants = DISTINCTCOUNT(dim_restaurant[restaurant_id])
+Inspections = DISTINCTCOUNT(fct_inspection[inspection_key])
+Violations = DISTINCTCOUNT(fct_violation[violation_key])
+Complaints = DISTINCTCOUNT(fct_complaint[complaint_id])
+Critical Violations = CALCULATE([Violations], fct_violation[critical_flag] = "Critical")
+Critical Violation Rate = DIVIDE([Critical Violations], [Violations])
+Average Inspection Score = AVERAGE(fct_inspection[score])
+Priority Restaurants = CALCULATE([Restaurants], rpt_restaurant_risk[risk_tier] IN {"HIGH", "CRITICAL"})
+Complaint Match Rate = DIVIDE(CALCULATE([Complaints], fct_complaint[restaurant_match_method] = "EXACT_ADDRESS_ZIP"), [Complaints])
+

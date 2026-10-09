@@ -1,0 +1,17 @@
+table Complaints
+	column complaint_type
+		dataType: string
+		sourceColumn: complaint_type
+	column complaints
+		dataType: int64
+		sourceColumn: complaints
+
+	partition Complaints = m
+		mode: import
+		source =
+			let
+				Source = Csv.Document(File.Contents(DataRoot & "\complaint_mix.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				Types = Table.TransformColumnTypes(Headers, {{"complaint_type", type text}, {"complaints", Int64.Type}})
+			in
+				Types

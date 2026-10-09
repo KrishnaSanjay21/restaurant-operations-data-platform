@@ -1,0 +1,13 @@
+{
+  "observed_raw_records": 577630,
+  "critical_checks_passed": 10,
+  "critical_checks_total": 10,
+  "checks": {
+    "minimum_500k_raw_records": true,
+    "all_critical_quality_checks_pass": true,
+    "incremental_runtime_is_faster": true,
+    "dashboard_preview_exists": true,
+    "power_bi_project_exists": true
+  },
+  "all_targets_met": true
+}

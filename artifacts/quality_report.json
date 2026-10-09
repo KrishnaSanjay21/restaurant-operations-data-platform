@@ -1,0 +1,47 @@
+{
+  "critical_check_count": 10,
+  "critical_pass_count": 10,
+  "all_critical_checks_passed": true,
+  "checks": {
+    "dim_restaurant_unique": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = COUNT(DISTINCT restaurant_id) FROM dim_restaurant"
+    },
+    "inspection_key_unique": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = COUNT(DISTINCT inspection_key) FROM fct_inspection"
+    },
+    "violation_key_unique": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = COUNT(DISTINCT violation_key) FROM fct_violation"
+    },
+    "complaint_key_unique": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = COUNT(DISTINCT complaint_id) FROM fct_complaint"
+    },
+    "weather_key_unique": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = COUNT(DISTINCT weather_key) FROM fct_weather"
+    },
+    "inspection_restaurant_not_null": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = 0 FROM fct_inspection WHERE restaurant_id IS NULL"
+    },
+    "inspection_restaurant_relationship": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = 0 FROM fct_inspection f LEFT JOIN dim_restaurant d USING (restaurant_id) WHERE d.restaurant_id IS NULL"
+    },
+    "violation_inspection_relationship": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = 0 FROM fct_violation v LEFT JOIN fct_inspection i USING (inspection_key) WHERE i.inspection_key IS NULL"
+    },
+    "risk_tier_accepted_values": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = 0 FROM rpt_restaurant_risk WHERE risk_tier NOT IN ('LOW','MEDIUM','HIGH','CRITICAL')"
+    },
+    "nonnegative_inspection_scores": {
+      "passed": true,
+      "sql": "SELECT COUNT(*) = 0 FROM fct_inspection WHERE score < 0"
+    }
+  }
+}

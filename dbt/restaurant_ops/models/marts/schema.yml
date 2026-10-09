@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: dim_restaurant
+    description: Current restaurant attributes keyed by NYC CAMIS identifier.
+    columns:
+      - name: restaurant_id
+        tests: [unique, not_null]
+      - name: location_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_key
+
+  - name: dim_location
+    description: Conformed inspection and complaint locations.
+    columns:
+      - name: location_key
+        tests: [unique, not_null]
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+
+  - name: dim_violation
+    columns:
+      - name: violation_code
+        tests: [unique, not_null]
+
+  - name: fct_inspection
+    description: One row per restaurant inspection.
+    columns:
+      - name: inspection_key
+        tests: [unique, not_null]
+      - name: restaurant_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_restaurant')
+                field: restaurant_id
+      - name: inspection_date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: fct_violation
+    description: One row per violation observed during an inspection.
+    columns:
+      - name: violation_key
+        tests: [unique, not_null]
+      - name: inspection_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_inspection')
+                field: inspection_key
+      - name: violation_code
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_violation')
+                field: violation_code
+
+  - name: fct_complaint
+    description: One row per selected DOHMH 311 complaint.
+    columns:
+      - name: complaint_id
+        tests: [unique, not_null]
+      - name: complaint_date
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: restaurant_match_method
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['EXACT_ADDRESS_ZIP', 'UNMATCHED']
+
+  - name: fct_weather
+    description: Daily Central Park weather from NOAA.
+    columns:
+      - name: weather_key
+        tests: [unique, not_null]
+      - name: weather_date
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: rpt_restaurant_risk
+    description: Operational prioritization mart; score is a transparent portfolio heuristic.
+    columns:
+      - name: restaurant_id
+        tests: [unique, not_null]
+      - name: risk_tier
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
+
+  - name: rpt_daily_operations
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+

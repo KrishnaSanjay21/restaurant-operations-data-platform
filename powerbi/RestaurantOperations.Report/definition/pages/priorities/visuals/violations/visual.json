@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "violations",
+  "position": {
+    "x": 800,
+    "y": 20,
+    "z": 21,
+    "height": 655,
+    "width": 450,
+    "tabOrder": 21
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Violations"
+                    }
+                  },
+                  "Property": "violation_code"
+                }
+              },
+              "queryRef": "Violations.violation_code",
+              "nativeQueryRef": "violation_code"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Violations"
+                    }
+                  },
+                  "Property": "occurrences"
+                }
+              },
+              "queryRef": "Violations.occurrences",
+              "nativeQueryRef": "occurrences"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

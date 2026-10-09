@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "risk",
+  "position": {
+    "x": 20,
+    "y": 20,
+    "z": 20,
+    "height": 655,
+    "width": 760,
+    "tabOrder": 20
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Risk"
+                    }
+                  },
+                  "Property": "restaurant_name"
+                }
+              },
+              "queryRef": "Risk.restaurant_name",
+              "nativeQueryRef": "restaurant_name"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Risk"
+                    }
+                  },
+                  "Property": "risk_score"
+                }
+              },
+              "queryRef": "Risk.risk_score",
+              "nativeQueryRef": "risk_score"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

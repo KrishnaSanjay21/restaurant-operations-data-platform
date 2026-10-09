@@ -1,0 +1,133 @@
+{
+  "batch_id": "20261009T200426Z",
+  "completed_at": "2026-10-09T20:07:06.381068+00:00",
+  "profile": "portfolio",
+  "sources": {
+    "complaints": {
+      "batch_id": "20261009T200426Z",
+      "completed_at": "2026-10-09T20:06:59.436968+00:00",
+      "expected_rows": 361938,
+      "file_count": 6,
+      "files": [
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00000.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "a27f6d68c5a69775a23a47cdc4f7210ec44d33e21c71b76671518aa1696ab01f",
+          "source": "complaints"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00001.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "c03c9dfdbf6607958eb66e51cd3609661740d2aed0a40e1d9c76cddeb8d328a0",
+          "source": "complaints"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00002.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "664179854f63c9a18a11eecce47c56f7ff2a8b928f6ca59cf25a562d08e62e64",
+          "source": "complaints"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00003.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "10c55311a8094c8a1ab635a4402bdc017bb22381c515afb13f23b62b63a6470b",
+          "source": "complaints"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00004.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "c0b95f5d8220c8d99e34be41c70a6e119f480cf7bcd7874037982b67cd4118e8",
+          "source": "complaints"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=complaints\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00005.jsonl.gz",
+          "row_count": 25000,
+          "sha256": "ae0552b6f5120d1ee5f152870f01a9266491f82a1935f4619891e235b80327a9",
+          "source": "complaints"
+        }
+      ],
+      "row_count": 275000,
+      "source": "complaints",
+      "started_at": "2026-10-09T20:04:26.230194+00:00"
+    },
+    "inspections": {
+      "batch_id": "20261009T200426Z",
+      "completed_at": "2026-10-09T20:05:59.132257+00:00",
+      "expected_rows": 296507,
+      "file_count": 6,
+      "files": [
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00000.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "21ad2bbd7cd415c134046f695ebc1d9fe0c2fef3997e9e58c7f507452c7c8204",
+          "source": "inspections"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00001.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "c331a0901e0bbc4b14ac45faac4111bf4277e03334de9cb563807bd95225d851",
+          "source": "inspections"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00002.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "b15376249a8a6874bccebbec3f5cd3aa88538252db51c8841280446dda051c04",
+          "source": "inspections"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00003.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "b6cdaf898c515e31f926adc94e255117672eddc09bba80bb395110436769d272",
+          "source": "inspections"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00004.jsonl.gz",
+          "row_count": 50000,
+          "sha256": "fc3dc92b61fa42dfb130bddacd2e42ecdedefeb5c3a6886d105ca1c0d5d38072",
+          "source": "inspections"
+        },
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=inspections\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00005.jsonl.gz",
+          "row_count": 46507,
+          "sha256": "3501b3c24236590618de8114873cab3f7e8f148c401e872c7ac0d6c8c8762187",
+          "source": "inspections"
+        }
+      ],
+      "row_count": 296507,
+      "source": "inspections",
+      "started_at": "2026-10-09T20:04:26.230194+00:00"
+    },
+    "weather": {
+      "batch_id": "20261009T200426Z",
+      "completed_at": "2026-10-09T20:07:06.381068+00:00",
+      "expected_rows": null,
+      "file_count": 1,
+      "files": [
+        {
+          "batch_id": "20261009T200426Z",
+          "path": "data\\raw\\source=weather\\ingest_date=2026-10-09\\batch_id=20261009T200426Z\\part-00000.jsonl.gz",
+          "row_count": 6123,
+          "sha256": "ee2783c8d6d67c97c95c62f14b247ad61436d5261225cb1fae9396bfe41b4847",
+          "source": "weather"
+        }
+      ],
+      "row_count": 6123,
+      "source": "weather",
+      "started_at": "2026-10-09T20:04:26.230194+00:00"
+    }
+  },
+  "started_at": "2026-10-09T20:04:26.230194+00:00",
+  "total_rows": 577630
+}
