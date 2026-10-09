@@ -1,2 +1,0 @@
-[console_scripts]
-restaurant-ops = restaurant_ops.cli:app

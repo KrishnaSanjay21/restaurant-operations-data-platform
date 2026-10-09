@@ -1,4 +1,6 @@
 .venv/
+*.egg-info/
+*.user.yml
 __pycache__/
 *.py[cod]
 .pytest_cache/
