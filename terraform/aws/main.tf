@@ -117,10 +117,10 @@ resource "aws_iam_role_policy" "snowflake_storage" {
 }
 
 resource "aws_sqs_queue" "dead_letter" {
-  name                      = "${local.name}-dead-letter"
-  message_retention_seconds = 1209600
+  name                       = "${local.name}-dead-letter"
+  message_retention_seconds  = 1209600
   visibility_timeout_seconds = 300
-  sqs_managed_sse_enabled   = true
+  sqs_managed_sse_enabled    = true
 }
 
 data "archive_file" "ingest_lambda" {
@@ -140,9 +140,9 @@ resource "aws_iam_role" "lambda" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Service = "lambda.amazonaws.com" }
-      Action = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
 }
@@ -153,18 +153,18 @@ resource "aws_iam_role_policy" "lambda" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
         Resource = "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:*"
       },
       {
-        Effect = "Allow"
-        Action = ["s3:PutObject", "s3:AbortMultipartUpload"]
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:AbortMultipartUpload"]
         Resource = "${aws_s3_bucket.raw.arn}/*"
       },
       {
-        Effect = "Allow"
-        Action = ["secretsmanager:GetSecretValue"]
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
         Resource = var.snowflake_secret_arn
       }
     ]
@@ -212,9 +212,9 @@ resource "aws_iam_role" "glue" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Service = "glue.amazonaws.com" }
-      Action = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
 }
@@ -225,23 +225,23 @@ resource "aws_iam_role_policy" "glue" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["s3:GetObject", "s3:ListBucket"]
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:ListBucket"]
         Resource = [aws_s3_bucket.raw.arn, "${aws_s3_bucket.raw.arn}/*", aws_s3_bucket.artifacts.arn, "${aws_s3_bucket.artifacts.arn}/*"]
       },
       {
-        Effect = "Allow"
-        Action = ["s3:PutObject", "s3:DeleteObject", "s3:ListBucket"]
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:DeleteObject", "s3:ListBucket"]
         Resource = [aws_s3_bucket.curated.arn, "${aws_s3_bucket.curated.arn}/*"]
       },
       {
-        Effect = "Allow"
-        Action = ["sqs:SendMessage", "sqs:SendMessageBatch"]
+        Effect   = "Allow"
+        Action   = ["sqs:SendMessage", "sqs:SendMessageBatch"]
         Resource = aws_sqs_queue.dead_letter.arn
       },
       {
-        Effect = "Allow"
-        Action = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "cloudwatch:PutMetricData"]
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents", "cloudwatch:PutMetricData"]
         Resource = "*"
       }
     ]
@@ -282,9 +282,9 @@ resource "aws_iam_role" "step_functions" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Service = "states.amazonaws.com" }
-      Action = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
 }
@@ -295,23 +295,23 @@ resource "aws_iam_role_policy" "step_functions" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["lambda:InvokeFunction"]
+        Effect   = "Allow"
+        Action   = ["lambda:InvokeFunction"]
         Resource = [aws_lambda_function.ingest.arn, aws_lambda_function.snowflake_load.arn]
       },
       {
-        Effect = "Allow"
-        Action = ["glue:StartJobRun", "glue:GetJobRun", "glue:GetJobRuns", "glue:BatchStopJobRun"]
+        Effect   = "Allow"
+        Action   = ["glue:StartJobRun", "glue:GetJobRun", "glue:GetJobRuns", "glue:BatchStopJobRun"]
         Resource = "*"
       },
       {
-        Effect = "Allow"
-        Action = ["sqs:SendMessage"]
+        Effect   = "Allow"
+        Action   = ["sqs:SendMessage"]
         Resource = aws_sqs_queue.dead_letter.arn
       },
       {
-        Effect = "Allow"
-        Action = ["logs:CreateLogDelivery", "logs:GetLogDelivery", "logs:UpdateLogDelivery", "logs:DeleteLogDelivery", "logs:ListLogDeliveries", "logs:PutResourcePolicy", "logs:DescribeResourcePolicies", "logs:DescribeLogGroups"]
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogDelivery", "logs:GetLogDelivery", "logs:UpdateLogDelivery", "logs:DeleteLogDelivery", "logs:ListLogDeliveries", "logs:PutResourcePolicy", "logs:DescribeResourcePolicies", "logs:DescribeLogGroups"]
         Resource = "*"
       }
     ]
@@ -343,9 +343,9 @@ resource "aws_iam_role" "events" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
+      Effect    = "Allow"
       Principal = { Service = "events.amazonaws.com" }
-      Action = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
 }
@@ -355,8 +355,8 @@ resource "aws_iam_role_policy" "events" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Effect = "Allow"
-      Action = "states:StartExecution"
+      Effect   = "Allow"
+      Action   = "states:StartExecution"
       Resource = aws_sfn_state_machine.pipeline.arn
     }]
   })
@@ -388,8 +388,8 @@ resource "aws_cloudwatch_metric_alarm" "pipeline_failed" {
   evaluation_periods  = 1
   threshold           = 1
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  dimensions = { StateMachineArn = aws_sfn_state_machine.pipeline.arn }
-  alarm_actions = local.alarm_actions
+  dimensions          = { StateMachineArn = aws_sfn_state_machine.pipeline.arn }
+  alarm_actions       = local.alarm_actions
 }
 
 resource "aws_cloudwatch_metric_alarm" "dlq_visible" {
@@ -402,7 +402,7 @@ resource "aws_cloudwatch_metric_alarm" "dlq_visible" {
   evaluation_periods  = 1
   threshold           = 1
   comparison_operator = "GreaterThanOrEqualToThreshold"
-  dimensions = { QueueName = aws_sqs_queue.dead_letter.name }
-  alarm_actions = local.alarm_actions
+  dimensions          = { QueueName = aws_sqs_queue.dead_letter.name }
+  alarm_actions       = local.alarm_actions
 }
 
